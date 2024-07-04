@@ -7,6 +7,7 @@ using ggst_api.utils;
 using StackExchange.Redis;
 using ggst_api.ScheduleTask;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -27,8 +28,14 @@ builder.Services.AddScoped<IUpdateDbSchedule, UpdateDbSchedule>();
 //sqlserver context
 builder.Services.AddDbContextFactory<SqlServerConnectDbcontext>(
     option => {
-        
-        option.UseSqlServer(builder.Configuration.GetSection("ConnectionStrings")["GGST_DB"]);
+        if (builder.Environment.IsEnvironment("Release"))
+        {
+            option.UseMySQL(builder.Configuration.GetSection("ConnectionStrings")["GGST_DB"]);
+        }
+        else {
+            option.UseSqlServer(builder.Configuration.GetSection("ConnectionStrings")["GGST_DB"]);
+        }
+        //option.UseSqlServer(builder.Configuration.GetSection("ConnectionStrings")["GGST_DB"]);
         option.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
     }
 );
@@ -64,6 +71,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+if (app.Environment.IsEnvironment("Release"))
+{
+    app.UseSwagger();
+    //app.UseSwaggerUI();
 }
 
 //cors

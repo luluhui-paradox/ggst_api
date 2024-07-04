@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35004.147
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ggst_api", "ggst_api\ggst_api.csproj", "{D2FF622C-30CD-4EB2-8ADA-C8E8B5AC74E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject1", "TestProject1\TestProject1.csproj", "{235AB78A-990F-4D18-9DA2-42D7188BC397}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D2FF622C-30CD-4EB2-8ADA-C8E8B5AC74E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2FF622C-30CD-4EB2-8ADA-C8E8B5AC74E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2FF622C-30CD-4EB2-8ADA-C8E8B5AC74E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2FF622C-30CD-4EB2-8ADA-C8E8B5AC74E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{235AB78A-990F-4D18-9DA2-42D7188BC397}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{235AB78A-990F-4D18-9DA2-42D7188BC397}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{235AB78A-990F-4D18-9DA2-42D7188BC397}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{235AB78A-990F-4D18-9DA2-42D7188BC397}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2CF1AA81-09BE-4F45-8362-A3888B1667FB}
+	EndGlobalSection
+EndGlobal

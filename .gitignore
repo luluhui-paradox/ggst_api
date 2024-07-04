@@ -366,3 +366,5 @@ FodyWeavers.xsd
 /ggst_api/utils/FileLogger.cs
 /TestProject1/StartUp.cs
 /TestProject1/testJsonConfig.json
+/ggst_api/appsettings - 复制.Development.json
+/ggst_api/appsettings.Release.json

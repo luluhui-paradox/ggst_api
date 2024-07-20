@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
+using ggst_api.kafkaUtils;
 
 namespace TestProject1
 {
@@ -18,6 +19,7 @@ namespace TestProject1
     {
         public readonly string sql_connect_str;
         public readonly string redis_connect_str;
+        public readonly string kafka_bootstrapserver;
 
         public Startup() {
             // json config
@@ -42,6 +44,8 @@ namespace TestProject1
                 // 获取 REDIS_LOCAL 的值
                 redis_connect_str = connectionStrings.GetProperty("REDIS_LOCAL").GetString();
 
+                kafka_bootstrapserver = root.GetProperty("kafka_config").GetProperty("BootstrapServers").GetString();
+
 
                 // 记得释放资源
                 jsonDocument.Dispose();
@@ -59,8 +63,14 @@ namespace TestProject1
             services.AddHttpClient();
             services.AddControllers();
 
+            //kafka service
+            services.AddSingleton<KafkaConfig>(
+                provider => {
+                    return new KafkaConfig(kafka_bootstrapserver);
+                }    
+            );
 
-            
+
 
             //sqlserver context
             services.AddDbContextFactory<SqlServerConnectDbcontext>(

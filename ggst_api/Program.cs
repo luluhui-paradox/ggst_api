@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using ggst_api.utils;
 using StackExchange.Redis;
 using ggst_api.ScheduleTask;
+using ggst_api.kafkaUtils;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +25,14 @@ builder.Services.AddHttpClient();
 builder.Services.AddScoped<ITop100Getter,Top100GetService>();
 builder.Services.AddScoped<RatingUpdateHttpUtil>();
 builder.Services.AddScoped<IUpdateDbSchedule, UpdateDbSchedule>();
+
+//kafka DI
+builder.Services.AddSingleton<KafkaConfig>(
+    provider => {
+        var conn = builder.Configuration.GetSection("kafka_config")["BootstrapServers"];
+        return new KafkaConfig(conn);
+    }   
+ );
 
 //sqlserver context
 builder.Services.AddDbContextFactory<SqlServerConnectDbcontext>(

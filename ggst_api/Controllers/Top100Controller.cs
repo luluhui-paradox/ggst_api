@@ -78,6 +78,7 @@ namespace ggst_api.Controllers
 
         [HttpGet("searchUsersByUsername")]
         [EnableCors("luluhui_policy")]
+        [TypeFilter(typeof(Update2kafkaFilter))]
         public List<PlayerInfoEntity> searchUsersByUsername(string username) {
             //search from redis
             List<PlayerInfoEntity> res;
@@ -129,6 +130,7 @@ namespace ggst_api.Controllers
 
         [HttpGet("searchUserExt")]
         [EnableCors("luluhui_policy")]
+        [TypeFilter(typeof(Update2kafkaFilter))]
         public List<PlayerInfoEntity> searchUserExt(string username,string userid,string? char_short) {
             //search from redis
             List<PlayerInfoEntity> res;

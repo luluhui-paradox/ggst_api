@@ -15,6 +15,7 @@ namespace ggst_api.kafkaUtils
             //provider
             ProducerConfig produceConfig = new ProducerConfig();
             produceConfig.BootstrapServers = conn;
+            produceConfig.Acks = Acks.Leader;
             _producerConfig = produceConfig;
             //consumer
             ConsumerConfig consumerConfig = new ConsumerConfig();
@@ -31,6 +32,15 @@ namespace ggst_api.kafkaUtils
         public ConsumerBuilder<TKey, TValue> GetConsumerBuilder<TKey, TValue>() { 
             return new ConsumerBuilder<TKey, TValue>(_consumerConfig);
         }
+
+        public void produceSendMessage<Tkey, Tvalue>(string topic,int partition,Tkey key, Tvalue value) {
+            var producer = GetProducerBuilder<Tkey, Tvalue>().Build();
+            TopicPartition topicPartition = new TopicPartition(topic, new Partition(partition));
+            Message<Tkey, Tvalue> message = new Message<Tkey, Tvalue>() {Key=key, Value = value };
+            producer.ProduceAsync(topicPartition, message);
+        }
+
+        
 
 
 

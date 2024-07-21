@@ -7,6 +7,7 @@ using ggst_api.utils;
 using StackExchange.Redis;
 using ggst_api.ScheduleTask;
 using ggst_api.kafkaUtils;
+using ggst_api.aspect;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +26,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddScoped<ITop100Getter,Top100GetService>();
 builder.Services.AddScoped<RatingUpdateHttpUtil>();
 builder.Services.AddScoped<IUpdateDbSchedule, UpdateDbSchedule>();
+builder.Services.AddSingleton<ResultUpdate>();
 
 //kafka DI
 builder.Services.AddSingleton<KafkaConfig>(

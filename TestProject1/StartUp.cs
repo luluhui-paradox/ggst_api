@@ -60,6 +60,7 @@ namespace TestProject1
             services.AddScoped<IRatingUpdateHttpUtil, RatingUpdateHttpUtil>();
             services.AddScoped<RatingUpdateHttpUtil>();
             services.AddScoped<IUpdateDbSchedule, UpdateDbSchedule>();
+            services.AddScoped<ResultUpdate>();
             services.AddHttpClient();
             services.AddControllers();
 

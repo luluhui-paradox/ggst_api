@@ -12,6 +12,7 @@ using ggst_api.entity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Caching.Distributed;
+using ggst_api.aspect;
 
 namespace ggst_api.Controllers
 {
@@ -23,18 +24,21 @@ namespace ggst_api.Controllers
         private readonly DbContext _dbContext;
         private readonly ILogger<Top100Controller> _logger;
         private readonly IDistributedCache _distributedCache;
+        private readonly ResultUpdate _resultUpdate;
 
-        public Top100Controller(ITop100Getter top100Getter,SqlServerConnectDbcontext sqlServerConnectDbcontext, ILogger<Top100Controller> logger,IDistributedCache distributedCache)
+        public Top100Controller(ITop100Getter top100Getter,SqlServerConnectDbcontext sqlServerConnectDbcontext, ILogger<Top100Controller> logger,IDistributedCache distributedCache,ResultUpdate resultUpdate)
         {
             _top100Getter = top100Getter;
             _dbContext = sqlServerConnectDbcontext;
             _logger = logger;
             _distributedCache = distributedCache;
+            _resultUpdate = resultUpdate;
         }
 
 
         [HttpGet("getTop100")]
         [EnableCors("luluhui_policy")]
+        [TypeFilter(typeof(Update2kafkaFilter))]
         public List<PlayerInfoEntity> getTop100info() {
             var cachedData = _distributedCache.GetString("getTop100info");
 
@@ -42,7 +46,9 @@ namespace ggst_api.Controllers
             {
                 try
                 {
-                    return PlayerInfoEntity.decodeFromString(cachedData);
+                    var res= PlayerInfoEntity.decodeFromString(cachedData);
+                    //_resultUpdate.sendSync(res);
+                    return res;
                 }
                 catch (Exception e)
                 {
@@ -53,6 +59,7 @@ namespace ggst_api.Controllers
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) // Cache for 10 minutes
                     };
                     _distributedCache.SetStringAsync("getTop100info",PlayerInfoEntity.encodeFromList(res),options);
+                    //_resultUpdate.sendSync(res);
                     return res;
                 }
             }
@@ -63,6 +70,7 @@ namespace ggst_api.Controllers
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) // Cache for 10 minutes
                 };
                 _distributedCache.SetStringAsync("getTop100info", PlayerInfoEntity.encodeFromList(res), options);
+                //_resultUpdate.sendSync(res);
                 return res;
             }
             

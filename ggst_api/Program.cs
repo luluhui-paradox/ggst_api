@@ -87,7 +87,7 @@ if (app.Environment.IsDevelopment())
 if (app.Environment.IsEnvironment("Release"))
 {
     app.UseSwagger();
-    //app.UseSwaggerUI();
+    app.UseSwaggerUI();
 }
 
 //cors

@@ -47,7 +47,7 @@ namespace ggst_api.Controllers
                 try
                 {
                     var res= PlayerInfoEntity.decodeFromString(cachedData);
-                    //_resultUpdate.sendSync(res);
+                    
                     return res;
                 }
                 catch (Exception e)
@@ -59,7 +59,7 @@ namespace ggst_api.Controllers
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) // Cache for 10 minutes
                     };
                     _distributedCache.SetStringAsync("getTop100info",PlayerInfoEntity.encodeFromList(res),options);
-                    //_resultUpdate.sendSync(res);
+                    
                     return res;
                 }
             }
@@ -70,7 +70,6 @@ namespace ggst_api.Controllers
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) // Cache for 10 minutes
                 };
                 _distributedCache.SetStringAsync("getTop100info", PlayerInfoEntity.encodeFromList(res), options);
-                //_resultUpdate.sendSync(res);
                 return res;
             }
             
@@ -95,25 +94,7 @@ namespace ggst_api.Controllers
                 }
             }
             res= _top100Getter.searchUsersFromDB(username);
-            if (res.IsNullOrEmpty()) {
 
-                res = _top100Getter.searchUsersFromRemote(username);
-                foreach (PlayerInfoEntity item in res)
-                {
-                    try
-                    {
-                        PlayerInfoEntity copyitem = item.deepcopy();
-                        _dbContext.Add(copyitem);
-                        _dbContext.SaveChanges();
-                    }
-                    catch (Exception)
-                    {
-                        _logger.LogError($"cannot insert item: id:{item.id},char_shot : {item.character_short}");
-                        
-                    }
-
-                }
-            }
             //insert into redis
             var options = new DistributedCacheEntryOptions
             {
@@ -148,24 +129,7 @@ namespace ggst_api.Controllers
                 }
             }
             res = _top100Getter.searchUserExactFromDB( username,  userid,  char_short);
-            if (res.IsNullOrEmpty() ){ 
-                res=_top100Getter.searchUserExactFromRemote(username, userid, char_short);
-                foreach (PlayerInfoEntity item in res) {
-                    try
-                    {
-                        PlayerInfoEntity copyitem=item.deepcopy();
-                        _dbContext.Add(copyitem);
-                        _dbContext.SaveChanges();
-                    }
-                    catch (Exception)
-                    {
-                        _logger.LogError($"cannot insert item: id:{item.id},char_shot : {item.character_short}");
-                       
-                    }
-                    
-                }
-                
-            }
+            
             var options = new DistributedCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) // Cache for 10 minutes

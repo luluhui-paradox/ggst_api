@@ -74,5 +74,11 @@ namespace TestProject1
             playerInfoEntities.Add(player);
             _resultUpdate.sendSync(playerInfoEntities);
         }
+
+        [Fact]
+        public void gettop100Test() { 
+            _resultUpdate.sendTop100();
+            kafkaConsumeTest();
+        }
     }
 }

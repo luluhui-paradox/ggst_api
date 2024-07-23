@@ -56,5 +56,49 @@ namespace ggst_api.Services
                 
             }
         }
+
+        public void sendTop100() {
+            var db = _redisConnection.GetDatabase();
+            //setnx to redis
+            //if updateSet Not exist,get redis lock and create Set with expire time
+            while (!db.KeyExists("updateSet"))
+            {
+                bool isSet = db.StringSet("update_lock", "1", TimeSpan.FromSeconds(5), When.NotExists);
+                if (isSet)
+                {
+                    db.SetAdd("updateSet", "xijinping");
+                    //db.SetRemove("updateSet", "xijinping");
+                    db.KeyExpire("updateSet", TimeSpan.FromMinutes(30));
+                    //release lock
+                    db.KeyDelete("update_lock");
+                }
+
+            }
+            var res = db.SetAdd("updateSet", "getTop100");
+            if (res)
+            {
+                //check if updateSet has expire
+                TimeSpan? expiration = db.KeyTimeToLive("updateSet");
+                if (!expiration.HasValue)
+                {
+                    db.SetAdd("updateSet", "getTop100");
+                    db.KeyExpire("updateSet", TimeSpan.FromMinutes(30));
+                }
+                //produce to kafka
+                int retry_times = 0; bool success = false;
+                while (retry_times < 5 && success == false)
+                {
+                    try
+                    {
+                        _kafkaConfig.produceSendMessage<string, string>("test_topic", 0, "luluhui_consumer", "getTop100");
+                        success = true;
+                    }
+                    catch (Exception)
+                    {
+                        retry_times++;
+                    }
+                }
+            }
+        }
     }
 }

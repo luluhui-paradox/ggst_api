@@ -368,3 +368,4 @@ FodyWeavers.xsd
 /TestProject1/testJsonConfig.json
 /ggst_api/appsettings - 复制.Development.json
 /ggst_api/appsettings.Release.json
+/TestProject1/testJsonConfigRelease.json

@@ -1,7 +1,5 @@
 using ggst_api;
-using ggst_api.config;
 using ggst_api.Controllers;
-using ggst_api.entity;
 using ggst_api.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
@@ -13,6 +11,11 @@ using StackExchange.Redis;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json.Linq;
 using Xunit;
+using ggst_api.config;
+using ggst_api.entity;
+using System.Text;
+using System.Security.Cryptography;
+using ggst_api.utils;
 
 namespace TestProject1
 {
@@ -54,6 +57,44 @@ namespace TestProject1
             _top100Controller.searchUsersByUsername("umisho");
             _top100Controller.searchUserExt("umisho","dsadsa",null);
             _top100Controller.getTop100info();
+        }
+
+        [Fact]
+        public void LoginUserAddTest() { 
+            TbLoginUser loginUser = new TbLoginUser();
+            loginUser.LoginUserAccount = "luluhui_counter";
+            loginUser.LoginUserName = "luluhui";
+            loginUser.LoginUserPassword = MD5Util.ComputeMd5Hash("luluhui");
+            //insert
+            _dbcontext.Add(loginUser);
+            _dbcontext.SaveChanges();
+            _dbcontext.Entry(loginUser).State=Microsoft.EntityFrameworkCore.EntityState.Detached;
+        }
+
+        [Fact]
+        public void addConnectTest() { 
+            //select tbplayerInfo.uuid
+            PlayerInfoEntity? playerInfo = _dbcontext.PlayerInfoEntities.Where(p =>  p.name.Equals("UMISHO")).FirstOrDefault();
+            _logger.WriteLine($"------------playerInfo is null ?? {playerInfo == null}-------------");
+            TbLoginUser? tbLoginUser = _dbcontext.TbLoginUsers.Where(tbl => tbl.LoginUserName.Equals("luluhui")).FirstOrDefault();
+            _logger.WriteLine($"------------tbLoginUser is null ?? {tbLoginUser == null}-------------");
+            if (playerInfo != null && tbLoginUser != null) { 
+                // make a new record
+                TbUser2Character tbUser2Character = new TbUser2Character();
+                
+                tbUser2Character.UserId=tbLoginUser.LoginUserId;
+                tbUser2Character.PlayUuid=playerInfo.id;
+                //search
+                
+                TbUser2Character? serachres = _dbcontext.TbUser2Characters.Where(s => s.UserId==tbLoginUser.LoginUserId&&s.PlayUuid.Equals(playerInfo.id)).FirstOrDefault();
+                if (serachres == null){
+                    //insert
+                    _dbcontext.Add(tbUser2Character);
+                    _dbcontext.SaveChanges();
+                    _dbcontext.Entry(tbUser2Character).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+                }
+                
+            }
         }
     }
 }

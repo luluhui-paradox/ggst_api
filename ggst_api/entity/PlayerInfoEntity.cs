@@ -47,6 +47,8 @@ namespace ggst_api.entity
         [Column("hidden_status")]
         public string? hidden_status { get; set; }
 
+        
+
         public virtual PlayerInfoEntity deepcopy() { 
             PlayerInfoEntity entity = new PlayerInfoEntity();
             entity.pos = pos;

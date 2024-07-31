@@ -26,7 +26,7 @@ namespace TestProject1
             string currentDirectory = Directory.GetCurrentDirectory();
 
             // 构建 JSON 文件的完整路径
-            string filePath = Path.Combine(currentDirectory, "testJsonConfig.json");
+            string filePath = Path.Combine(currentDirectory, "testJsonConfigRelease.json");
             using (var fileStream = File.OpenRead(filePath))
             {
                 var jsonDocument = JsonDocument.Parse(fileStream);
@@ -77,7 +77,7 @@ namespace TestProject1
             services.AddDbContextFactory<SqlServerConnectDbcontext>(
                 option => {
 
-                    option.UseSqlServer(sql_connect_str);
+                    option.UseMySQL(sql_connect_str);
                     option.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 }
             );

@@ -11,9 +11,13 @@
 
   <ItemGroup>
     <None Remove="testJsonConfig.json" />
+    <None Remove="testJsonConfigRelease.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="testJsonConfigRelease.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="testJsonConfig.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

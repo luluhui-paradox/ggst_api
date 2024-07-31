@@ -1,4 +1,3 @@
-using ggst_api.config;
 using ggst_api.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -8,6 +7,7 @@ using StackExchange.Redis;
 using ggst_api.ScheduleTask;
 using ggst_api.kafkaUtils;
 using ggst_api.aspect;
+using ggst_api.config;
 
 
 var builder = WebApplication.CreateBuilder(args);

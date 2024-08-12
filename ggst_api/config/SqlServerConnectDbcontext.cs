@@ -39,6 +39,10 @@ namespace ggst_api.config
                 entity.Property(e => e.LoginUserPassword)
                     .HasMaxLength(45)
                     .HasColumnName("login_user_password");
+                entity.Property(e => e.LoginUserRole)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("login_user_role");
+
             });
 
             modelBuilder.Entity<PlayerInfoEntity>(entity =>

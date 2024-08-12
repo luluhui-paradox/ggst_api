@@ -8,10 +8,16 @@ using ggst_api.ScheduleTask;
 using ggst_api.kafkaUtils;
 using ggst_api.aspect;
 using ggst_api.config;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using PostSharp.Extensibility;
+using System.Text;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
 
+var services = builder.Services;
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -27,6 +33,7 @@ builder.Services.AddScoped<ITop100Getter,Top100GetService>();
 builder.Services.AddScoped<RatingUpdateHttpUtil>();
 builder.Services.AddScoped<IUpdateDbSchedule, UpdateDbSchedule>();
 builder.Services.AddSingleton<ResultUpdate>();
+builder.Services.AddSingleton<TokenGenUtil>();
 
 //kafka DI
 builder.Services.AddSingleton<KafkaConfig>(
@@ -75,6 +82,25 @@ builder.Services.AddCors(
 
 
 
+services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = "luluhui",
+        ValidAudience = "your-audience",
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your-very-long-secret-key-that-is-probably-over-32-bytes"))
+    
+    };
+    
+});
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -99,5 +125,9 @@ app.UseAuthorization();
 
 
 app.MapControllers();
+
+// 启用身份验证
+app.UseAuthentication();
+//app.UseAuthorization();
 
 app.Run();

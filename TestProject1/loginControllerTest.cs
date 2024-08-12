@@ -31,12 +31,15 @@ namespace TestProject1
 
         private readonly LoginUserController _loginUserController;
 
-        public LoginUserControllerTest(ITop100Getter top100GetService,SqlServerConnectDbcontext dbcontext,ITestOutputHelper logger,IConnectionMultiplexer connection, LoginUserController loginUserController) { 
+        private readonly TokenGenUtil _tokenGenUtil;
+
+        public LoginUserControllerTest(ITop100Getter top100GetService,SqlServerConnectDbcontext dbcontext,ITestOutputHelper logger,IConnectionMultiplexer connection, LoginUserController loginUserController,TokenGenUtil tokenGenUtil) { 
             _top100Getter = top100GetService;
             _dbcontext = dbcontext;
             _logger = logger;
             _connection = connection;
             _loginUserController = loginUserController;
+            _tokenGenUtil=tokenGenUtil;
         }
 
         [Fact]
@@ -57,6 +60,13 @@ namespace TestProject1
             var res = _loginUserController.Register("15723174912","luluhui_alter","asdf");
             Assert.True(res != null && res.Value.ContainsKey("success"));
             
+        }
+
+        [Fact]
+        public void TokenGenTest() { 
+            var db = _connection.GetDatabase();
+            var res=_tokenGenUtil.genToken("15663693517");
+            _logger.WriteLine(res);
         }
 
         

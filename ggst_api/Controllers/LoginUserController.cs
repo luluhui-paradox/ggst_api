@@ -18,11 +18,13 @@ namespace ggst_api.Controllers
         private readonly SqlServerConnectDbcontext _dbContext;
         private readonly ILogger<LoginUserController> _logger;
         private readonly IConnectionMultiplexer _redisConnection;
+        private readonly TokenGenUtil _tokenGenUtil;
 
-        public LoginUserController(SqlServerConnectDbcontext sqlServerConnectDbcontext, ILogger<LoginUserController> logger,IConnectionMultiplexer redis_connection) {
+        public LoginUserController(SqlServerConnectDbcontext sqlServerConnectDbcontext, ILogger<LoginUserController> logger,IConnectionMultiplexer redis_connection,TokenGenUtil tokenGenUtil) {
             _dbContext = sqlServerConnectDbcontext;
             _logger = logger;
             _redisConnection = redis_connection;
+            _tokenGenUtil = tokenGenUtil;
         }
 
 
@@ -33,11 +35,10 @@ namespace ggst_api.Controllers
             if (playerInfo != null)
             {
                 //exist,create an token, save to redis,expire at 4 hours
-                string source = $"{user_account}+{password_md5}";
-                string token=MD5Util.ComputeMd5Hash(source);
+                string token = _tokenGenUtil.genToken(user_account);
                 var redisdb = _redisConnection.GetDatabase(1);
                 //create a tokenset
-                redisdb.StringSet(token, "1",expiry:TimeSpan.FromMinutes(240), When.NotExists);
+                redisdb.StringSet(token, playerInfo.LoginUserRole ,expiry:TimeSpan.FromMinutes(240), When.NotExists);
                 //make a dict
                 var resultres=new Dictionary<string, object>();
                 resultres.Add("token",token);

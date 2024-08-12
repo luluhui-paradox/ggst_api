@@ -13,6 +13,7 @@ using System.Text;
 using Microsoft.Extensions.Caching.Distributed;
 using ggst_api.aspect;
 using ggst_api.config;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ggst_api.Controllers
 {
@@ -35,10 +36,11 @@ namespace ggst_api.Controllers
             _resultUpdate = resultUpdate;
         }
 
-
+        [Authorize()]
         [HttpGet("getTop100")]
         [EnableCors("luluhui_policy")]
         [TypeFilter(typeof(Update2kafkaFilter))]
+        [TypeFilter(typeof(LoginControllerBeforeAspect))]
         public List<PlayerInfoEntity> getTop100info() {
             var cachedData = _distributedCache.GetString("getTop100info");
 

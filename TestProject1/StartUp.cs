@@ -63,6 +63,7 @@ namespace TestProject1
             services.AddScoped<ResultUpdate>();
             services.AddHttpClient();
             services.AddControllers();
+            services.AddSingleton<TokenGenUtil>();
 
             //kafka service
             services.AddSingleton<KafkaConfig>(

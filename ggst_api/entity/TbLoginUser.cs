@@ -13,5 +13,7 @@ public partial class TbLoginUser
 
     public string LoginUserPassword { get; set; } = null!;
 
+    public int LoginUserRole { get; set; }
+
     public virtual ICollection<TbUser2Character> TbUser2Characters { get; set; } = new List<TbUser2Character>();
 }
